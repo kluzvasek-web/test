@@ -6,11 +6,7 @@
   <title>Pager Component</title>
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -31,10 +27,7 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .demo-section {
-      margin-bottom: 3rem;
-    }
-
+    .demo-section { margin-bottom: 3rem; }
     .demo-section h2 {
       font-size: 1.125rem;
       font-weight: 500;
@@ -80,24 +73,11 @@
       flex-shrink: 0;
     }
 
-    .pager-button:hover:not(:disabled) {
-      background-color: rgba(33, 33, 33, 0.06);
-    }
+    .pager-button:hover:not(:disabled) { background-color: rgba(33, 33, 33, 0.06); }
+    .pager-button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .pager-button.active { background-color: rgba(33, 33, 33, 0.12); }
 
-    .pager-button:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .pager-button.active {
-      background-color: rgba(33, 33, 33, 0.12);
-    }
-
-    .pager-button svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
+    .pager-button svg { width: 100%; height: 100%; display: block; }
 
     .pager-page-number {
       font-size: 14px;
@@ -162,7 +142,6 @@
       justify-content: center;
     }
 
-    /* ✅ DŮLEŽITÉ: aby SVG v dropdownu vždy vyplnilo wrapper */
     .dropdown-icon svg {
       width: 100%;
       height: 100%;
@@ -182,9 +161,7 @@
       display: none;
     }
 
-    .dropdown-menu.open {
-      display: block;
-    }
+    .dropdown-menu.open { display: block; }
 
     .dropdown-option {
       width: 100%;
@@ -198,9 +175,7 @@
       transition: background-color 0.2s;
     }
 
-    .dropdown-option:hover {
-      background-color: rgba(33, 33, 33, 0.06);
-    }
+    .dropdown-option:hover { background-color: rgba(33, 33, 33, 0.06); }
 
     .dropdown-option.active {
       background-color: rgba(33, 33, 33, 0.12);
@@ -208,34 +183,33 @@
     }
 
     /* Icon sizes */
-    .icon-16 {
-      width: 16px;
-      height: 16px;
-    }
+    .icon-16 { width: 16px; height: 16px; }
+    .icon-8  { width: 8px;  height: 16px; }
+    .icon-14 { width: 14px; height: 8px; }
 
-    .icon-8 {
-      width: 8px;
-      height: 16px;
-    }
-
-    .icon-14 {
-      width: 14px;
-      height: 8px;
-    }
-
-    /* ✅ DŮLEŽITÉ: vycentrování ikon uvnitř wrapperů */
-    .icon-16,
-    .icon-8,
-    .icon-14 {
+    /* Center icons */
+    .icon-16, .icon-8, .icon-14 {
       display: flex;
       align-items: center;
       justify-content: center;
     }
-
-    .icon-16 svg,
-    .icon-8 svg,
-    .icon-14 svg {
+    .icon-16 svg, .icon-8 svg, .icon-14 svg {
       display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ✅ Caret rotate + animation */
+    .dropdown-caret {
+      transform-origin: 50% 50%;
+      transition: transform 180ms ease;
+      will-change: transform;
+    }
+    .dropdown-container.open .dropdown-caret {
+      transform: rotate(180deg);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .dropdown-caret { transition: none; }
     }
   </style>
 </head>
@@ -277,40 +251,48 @@
     class Pager {
       constructor(containerId, options = {}) {
         this.container = document.getElementById(containerId);
+
         this.currentPage = 3;
         this.itemsPerPage = 20;
         this.totalItems = options.totalItems || 200;
+
         this.showInfo = options.showInfo !== undefined ? options.showInfo : true;
         this.showDropdown = options.showDropdown !== undefined ? options.showDropdown : true;
         this.showFirstLast = options.showFirstLast || false;
         this.showPages = options.showPages !== undefined ? options.showPages : true;
+
         this.itemsPerPageOptions = options.itemsPerPageOptions || [10, 20, 30, 50, 100];
         this.onPageChange = options.onPageChange || null;
 
+        // ✅ stav dropdownu (aby byl konzistentní mezi rendery)
+        this.dropdownOpen = false;
+
+        // ✅ bind handlers (aby šly případně i odpojit)
+        this.onContainerClick = this.onContainerClick.bind(this);
+        this.onDocumentClick = this.onDocumentClick.bind(this);
+
         this.render();
-        this.attachEventListeners();
+
+        // ✅ event listenery připojit jen JEDNOU
+        this.container.addEventListener('click', this.onContainerClick);
+        document.addEventListener('click', this.onDocumentClick);
       }
 
       get totalPages() {
-        return Math.ceil(this.totalItems / this.itemsPerPage);
+        return Math.max(1, Math.ceil(this.totalItems / this.itemsPerPage));
       }
-
       get startItem() {
         return (this.currentPage - 1) * this.itemsPerPage + 1;
       }
-
       get endItem() {
         return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
       }
-
       get infoText() {
         return `${this.startItem}–${this.endItem} z ${this.totalItems}`;
       }
-
       get canGoPrevious() {
         return this.currentPage > 1;
       }
-
       get canGoNext() {
         return this.currentPage < this.totalPages;
       }
@@ -320,46 +302,35 @@
         const maxVisible = 5;
 
         if (this.totalPages <= maxVisible) {
-          for (let i = 1; i <= this.totalPages; i++) {
-            pageNumbers.push(i);
-          }
+          for (let i = 1; i <= this.totalPages; i++) pageNumbers.push(i);
         } else {
           let start = Math.max(1, this.currentPage - 2);
           let end = Math.min(this.totalPages, start + maxVisible - 1);
 
-          if (end - start < maxVisible - 1) {
-            start = Math.max(1, end - maxVisible + 1);
-          }
-
-          for (let i = start; i <= end; i++) {
-            pageNumbers.push(i);
-          }
+          if (end - start < maxVisible - 1) start = Math.max(1, end - maxVisible + 1);
+          for (let i = start; i <= end; i++) pageNumbers.push(i);
         }
-
         return pageNumbers;
       }
 
-      // ✅ ZMĚNA: preserveAspectRatio="xMidYMid meet" (centrum + bez deformace)
+      // ✅ preserveAspectRatio kvůli centrování ikon
       createSVG(paths, viewBox, className = '') {
         if (Array.isArray(paths)) {
           return `
             <svg class="${className}" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="${viewBox}">
-              <g>
-                ${paths.map(path => `<path d="${path}" fill="#717171"/>`).join('')}
-              </g>
-            </svg>
-          `;
-        } else {
-          return `
-            <svg class="${className}" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="${viewBox}">
-              <path clip-rule="evenodd" d="${paths}" fill="#717171" fill-rule="evenodd"/>
+              <g>${paths.map(p => `<path d="${p}" fill="#717171"/>`).join('')}</g>
             </svg>
           `;
         }
+        return `
+          <svg class="${className}" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="${viewBox}">
+            <path clip-rule="evenodd" d="${paths}" fill="#717171" fill-rule="evenodd"/>
+          </svg>
+        `;
       }
 
       render() {
-        let html = '<div class="pager">';
+        let html = `<div class="pager">`;
 
         // Info
         if (this.showInfo) {
@@ -373,7 +344,7 @@
         // First button
         if (this.showFirstLast) {
           html += `
-            <button class="pager-button" data-action="first" ${!this.canGoPrevious ? 'disabled' : ''}>
+            <button class="pager-button" type="button" data-action="first" ${!this.canGoPrevious ? 'disabled' : ''}>
               <div class="icon-16">
                 ${this.createSVG([svgPaths.p19db59f0, svgPaths.pb801480], '0 0 15.3107 13.1213')}
               </div>
@@ -383,7 +354,7 @@
 
         // Previous button
         html += `
-          <button class="pager-button" data-action="previous" ${!this.canGoPrevious ? 'disabled' : ''}>
+          <button class="pager-button" type="button" data-action="previous" ${!this.canGoPrevious ? 'disabled' : ''}>
             <div class="icon-8">
               ${this.createSVG(svgPaths.p2894eeb0, '0 0 7.31066 13.1213')}
             </div>
@@ -392,22 +363,21 @@
 
         // Page numbers
         if (this.showPages) {
-          html += '<div class="pages-wrap">';
-          const pageNumbers = this.getPageNumbers();
-          pageNumbers.forEach(pageNum => {
+          html += `<div class="pages-wrap">`;
+          this.getPageNumbers().forEach(pageNum => {
             const isActive = pageNum === this.currentPage;
             html += `
-              <button class="pager-button ${isActive ? 'active' : ''}" data-action="page" data-page="${pageNum}">
+              <button class="pager-button ${isActive ? 'active' : ''}" type="button" data-action="page" data-page="${pageNum}">
                 <span class="pager-page-number">${pageNum}</span>
               </button>
             `;
           });
-          html += '</div>';
+          html += `</div>`;
         }
 
         // Next button
         html += `
-          <button class="pager-button" data-action="next" ${!this.canGoNext ? 'disabled' : ''}>
+          <button class="pager-button" type="button" data-action="next" ${!this.canGoNext ? 'disabled' : ''}>
             <div class="icon-8">
               ${this.createSVG(svgPaths.p3899fe80, '0 0 7.31066 13.1213')}
             </div>
@@ -417,7 +387,7 @@
         // Last button
         if (this.showFirstLast) {
           html += `
-            <button class="pager-button" data-action="last" ${!this.canGoNext ? 'disabled' : ''}>
+            <button class="pager-button" type="button" data-action="last" ${!this.canGoNext ? 'disabled' : ''}>
               <div class="icon-16">
                 ${this.createSVG([svgPaths.p3899fe80, svgPaths.p31c1de00], '0 0 15.3107 13.1213')}
               </div>
@@ -428,20 +398,25 @@
         // Dropdown
         if (this.showDropdown) {
           html += `
-            <div class="dropdown-container">
+            <div class="dropdown-container ${this.dropdownOpen ? 'open' : ''}">
               <div class="dropdown-wrap">
-                <button class="dropdown-button" data-action="toggle-dropdown">
+                <button class="dropdown-button" type="button" data-action="toggle-dropdown" aria-expanded="${this.dropdownOpen}">
                   <span class="dropdown-text">${this.itemsPerPage}</span>
                   <div class="dropdown-icon">
                     <div class="icon-14">
-                      ${this.createSVG(svgPaths.p1e3bce80, '0 0 13.1213 7.31066')}
+                      ${this.createSVG(svgPaths.p1e3bce80, '0 0 13.1213 7.31066', 'dropdown-caret')}
                     </div>
                   </div>
                 </button>
               </div>
-              <div class="dropdown-menu">
+
+              <div class="dropdown-menu ${this.dropdownOpen ? 'open' : ''}">
                 ${this.itemsPerPageOptions.map(option => `
-                  <button class="dropdown-option ${option === this.itemsPerPage ? 'active' : ''}" data-action="select-items" data-value="${option}">
+                  <button
+                    class="dropdown-option ${option === this.itemsPerPage ? 'active' : ''}"
+                    type="button"
+                    data-action="select-items"
+                    data-value="${option}">
                     ${option}
                   </button>
                 `).join('')}
@@ -450,60 +425,61 @@
           `;
         }
 
-        html += '</div>';
+        html += `</div>`;
         this.container.innerHTML = html;
       }
 
-      attachEventListeners() {
-        this.container.addEventListener('click', (e) => {
-          const button = e.target.closest('button');
-          if (!button) return;
+      // ✅ Event delegation - jeden handler pro celý pager
+      onContainerClick(e) {
+        const button = e.target.closest('button');
+        if (!button) return;
 
-          const action = button.dataset.action;
+        const action = button.dataset.action;
+        switch (action) {
+          case 'first':
+            this.goToPage(1);
+            break;
+          case 'last':
+            this.goToPage(this.totalPages);
+            break;
+          case 'previous':
+            this.goToPage(this.currentPage - 1);
+            break;
+          case 'next':
+            this.goToPage(this.currentPage + 1);
+            break;
+          case 'page':
+            this.goToPage(parseInt(button.dataset.page, 10));
+            break;
+          case 'toggle-dropdown':
+            this.toggleDropdown();
+            break;
+          case 'select-items':
+            this.setItemsPerPage(parseInt(button.dataset.value, 10));
+            break;
+        }
+      }
 
-          switch (action) {
-            case 'first':
-              this.goToPage(1);
-              break;
-            case 'last':
-              this.goToPage(this.totalPages);
-              break;
-            case 'previous':
-              this.goToPage(this.currentPage - 1);
-              break;
-            case 'next':
-              this.goToPage(this.currentPage + 1);
-              break;
-            case 'page':
-              this.goToPage(parseInt(button.dataset.page));
-              break;
-            case 'toggle-dropdown':
-              this.toggleDropdown();
-              break;
-            case 'select-items':
-              this.setItemsPerPage(parseInt(button.dataset.value));
-              break;
-          }
-        });
-
-        // Close dropdown on outside click
-        document.addEventListener('click', (e) => {
-          if (!e.target.closest('.dropdown-container')) {
-            this.closeDropdown();
-          }
-        });
+      // ✅ zavření při kliku mimo tento pager
+      onDocumentClick(e) {
+        if (!this.container.contains(e.target)) {
+          this.closeDropdown();
+        }
       }
 
       goToPage(page) {
         const newPage = Math.max(1, Math.min(page, this.totalPages));
-        if (newPage !== this.currentPage) {
-          this.currentPage = newPage;
-          this.render();
-          this.attachEventListeners();
+        if (newPage === this.currentPage) return;
 
-          if (this.onPageChange) {
-            this.onPageChange(this.currentPage, this.itemsPerPage);
-          }
+        this.currentPage = newPage;
+
+        // (doporučeno) při změně stránky dropdown zavřít
+        this.dropdownOpen = false;
+
+        this.render();
+
+        if (this.onPageChange) {
+          this.onPageChange(this.currentPage, this.itemsPerPage);
         }
       }
 
@@ -511,8 +487,11 @@
         this.itemsPerPage = value;
         const newTotalPages = Math.ceil(this.totalItems / value);
         this.currentPage = Math.min(this.currentPage, newTotalPages);
+
+        // po výběru zavřít, ale pak jde kdykoli znovu otevřít
+        this.dropdownOpen = false;
+
         this.render();
-        this.attachEventListeners();
 
         if (this.onPageChange) {
           this.onPageChange(this.currentPage, this.itemsPerPage);
@@ -520,17 +499,14 @@
       }
 
       toggleDropdown() {
-        const dropdown = this.container.querySelector('.dropdown-menu');
-        if (dropdown) {
-          dropdown.classList.toggle('open');
-        }
+        this.dropdownOpen = !this.dropdownOpen;
+        this.render();
       }
 
       closeDropdown() {
-        const dropdown = this.container.querySelector('.dropdown-menu');
-        if (dropdown) {
-          dropdown.classList.remove('open');
-        }
+        if (!this.dropdownOpen) return;
+        this.dropdownOpen = false;
+        this.render();
       }
     }
 
