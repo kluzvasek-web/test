@@ -1,546 +1,571 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pager Component</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pager Component</title>
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #f5f5f5;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        .container {
-            max-width: 900px;
-            width: 100%;
-            background: white;
-            padding: 3rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
 
-        .demo-section {
-            margin-bottom: 3rem;
-        }
+    .container {
+      max-width: 900px;
+      width: 100%;
+      background: white;
+      padding: 3rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
 
-        .demo-section h2 {
-            font-size: 1.125rem;
-            font-weight: 500;
-            margin-bottom: 1rem;
-            color: #212121;
-        }
+    .demo-section {
+      margin-bottom: 3rem;
+    }
 
-        /* Pager Component Styles */
-        .pager {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
+    .demo-section h2 {
+      font-size: 1.125rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      color: #212121;
+    }
 
-        .pager-info {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 40px;
-            padding-right: 16px;
-            flex-shrink: 0;
-        }
+    /* Pager Component Styles */
+    .pager {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
 
-        .pager-info-text {
-            font-size: 14px;
-            color: #717171;
-            letter-spacing: -0.14px;
-            white-space: nowrap;
-        }
+    .pager-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 40px;
+      padding-right: 16px;
+      flex-shrink: 0;
+    }
 
-        .pager-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            flex-shrink: 0;
-        }
+    .pager-info-text {
+      font-size: 14px;
+      color: #717171;
+      letter-spacing: -0.14px;
+      white-space: nowrap;
+    }
 
-        .pager-button:hover:not(:disabled) {
-            background-color: rgba(33, 33, 33, 0.06);
-        }
+    .pager-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      flex-shrink: 0;
+    }
 
-        .pager-button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
+    .pager-button:hover:not(:disabled) {
+      background-color: rgba(33, 33, 33, 0.06);
+    }
 
-        .pager-button.active {
-            background-color: rgba(33, 33, 33, 0.12);
-        }
+    .pager-button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
 
-        .pager-button svg {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
+    .pager-button.active {
+      background-color: rgba(33, 33, 33, 0.12);
+    }
 
-        .pager-page-number {
-            font-size: 14px;
-            letter-spacing: -0.14px;
-            color: #717171;
-            line-height: 20px;
-        }
+    .pager-button svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
 
-        .pager-button.active .pager-page-number {
-            color: #212121;
-            font-weight: 500;
-        }
+    .pager-page-number {
+      font-size: 14px;
+      letter-spacing: -0.14px;
+      color: #717171;
+      line-height: 20px;
+    }
 
-        .pages-wrap {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-            flex-shrink: 0;
-        }
+    .pager-button.active .pager-page-number {
+      color: #212121;
+      font-weight: 500;
+    }
 
-        /* Dropdown Styles */
-        .dropdown-container {
-            position: relative;
-            width: 72px;
-            flex-shrink: 0;
-        }
+    .pages-wrap {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      flex-shrink: 0;
+    }
 
-        .dropdown-wrap {
-            background: white;
-            height: 40px;
-            border-radius: 8px;
-            border: 1px solid #717171;
-            position: relative;
-        }
+    /* Dropdown Styles */
+    .dropdown-container {
+      position: relative;
+      width: 72px;
+      flex-shrink: 0;
+    }
 
-        .dropdown-button {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            padding: 0 4px;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-        }
+    .dropdown-wrap {
+      background: white;
+      height: 40px;
+      border-radius: 8px;
+      border: 1px solid #717171;
+      position: relative;
+    }
 
-        .dropdown-text {
-            flex: 1;
-            padding: 8px 4px 8px 8px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #212121;
-            letter-spacing: -0.14px;
-            text-align: left;
-        }
+    .dropdown-button {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+    }
 
-        .dropdown-icon {
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .dropdown-text {
+      flex: 1;
+      padding: 8px 4px 8px 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #212121;
+      letter-spacing: -0.14px;
+      text-align: left;
+    }
 
-        .dropdown-menu {
-            position: absolute;
-            top: 44px;
-            right: 0;
-            background: white;
-            border: 1px solid #717171;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 10;
-            min-width: 72px;
-            display: none;
-        }
+    .dropdown-icon {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .dropdown-menu.open {
-            display: block;
-        }
+    /* ✅ DŮLEŽITÉ: aby SVG v dropdownu vždy vyplnilo wrapper */
+    .dropdown-icon svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
 
-        .dropdown-option {
-            width: 100%;
-            padding: 8px 12px;
-            text-align: left;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            font-size: 14px;
-            color: #212121;
-            transition: background-color 0.2s;
-        }
+    .dropdown-menu {
+      position: absolute;
+      top: 44px;
+      right: 0;
+      background: white;
+      border: 1px solid #717171;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 10;
+      min-width: 72px;
+      display: none;
+    }
 
-        .dropdown-option:hover {
-            background-color: rgba(33, 33, 33, 0.06);
-        }
+    .dropdown-menu.open {
+      display: block;
+    }
 
-        .dropdown-option.active {
-            background-color: rgba(33, 33, 33, 0.12);
-            font-weight: 500;
-        }
+    .dropdown-option {
+      width: 100%;
+      padding: 8px 12px;
+      text-align: left;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 14px;
+      color: #212121;
+      transition: background-color 0.2s;
+    }
 
-        /* Icon sizes */
-        .icon-16 {
-            width: 16px;
-            height: 16px;
-        }
+    .dropdown-option:hover {
+      background-color: rgba(33, 33, 33, 0.06);
+    }
 
-        .icon-8 {
-            width: 8px;
-            height: 16px;
-        }
+    .dropdown-option.active {
+      background-color: rgba(33, 33, 33, 0.12);
+      font-weight: 500;
+    }
 
-        .icon-14 {
-            width: 14px;
-            height: 8px;
-        }
-    </style>
+    /* Icon sizes */
+    .icon-16 {
+      width: 16px;
+      height: 16px;
+    }
+
+    .icon-8 {
+      width: 8px;
+      height: 16px;
+    }
+
+    .icon-14 {
+      width: 14px;
+      height: 8px;
+    }
+
+    /* ✅ DŮLEŽITÉ: vycentrování ikon uvnitř wrapperů */
+    .icon-16,
+    .icon-8,
+    .icon-14 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-16 svg,
+    .icon-8 svg,
+    .icon-14 svg {
+      display: block;
+    }
+  </style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="demo-section">
-            <h2>Výchozí Pager</h2>
-            <div id="pager1"></div>
-        </div>
-
-        <div class="demo-section">
-            <h2>S tlačítky První/Poslední</h2>
-            <div id="pager2"></div>
-        </div>
-
-        <div class="demo-section">
-            <h2>Minimální (bez info, bez dropdownu)</h2>
-            <div id="pager3"></div>
-        </div>
-
-        <div class="demo-section">
-            <h2>Bez čísel stránek</h2>
-            <div id="pager4"></div>
-        </div>
+  <div class="container">
+    <div class="demo-section">
+      <h2>Výchozí Pager</h2>
+      <div id="pager1"></div>
     </div>
 
-    <script>
-        // SVG Paths
-        const svgPaths = {
-            p19db59f0: "M1.81066 6.56066L7.31066 1.06066L6.25 0L0.21967 6.03033C0.0790176 6.17098 0 6.36175 0 6.56066C0 6.75957 0.0790175 6.95034 0.21967 7.09099L6.25 13.1213L7.31066 12.0607L1.81066 6.56066Z",
-            p1e3bce80: "M12.0607 0L6.56066 5.5L1.06066 4.84288e-07L0 1.06066L6.03033 7.09099C6.17098 7.23164 6.36175 7.31066 6.56066 7.31066C6.75957 7.31066 6.95034 7.23164 7.09099 7.09099L13.1213 1.06066L12.0607 0Z",
-            p2894eeb0: "M7.31066 1.06066L1.81066 6.56066L7.31066 12.0607L6.25 13.1213L0.21967 7.09099C0.0790175 6.95034 0 6.75957 0 6.56066C0 6.36175 0.0790176 6.17098 0.21967 6.03033L6.25 0L7.31066 1.06066Z",
-            p31c1de00: "M8 1.06066L13.5 6.56066L8 12.0607L9.06066 13.1213L15.091 7.09099C15.2316 6.95034 15.3107 6.75957 15.3107 6.56066C15.3107 6.36175 15.2316 6.17098 15.091 6.03033L9.06066 0L8 1.06066Z",
-            p3899fe80: "M0 1.06066L5.5 6.56066L0 12.0607L1.06066 13.1213L7.09099 7.09099C7.23164 6.95034 7.31066 6.75957 7.31066 6.56066C7.31066 6.36175 7.23164 6.17098 7.09099 6.03033L1.06066 0L0 1.06066Z",
-            pb801480: "M9.81066 6.56066L15.3107 1.06066L14.25 0L8.21967 6.03033C8.07902 6.17098 8 6.36175 8 6.56066C8 6.75957 8.07902 6.95034 8.21967 7.09099L14.25 13.1213L15.3107 12.0607L9.81066 6.56066Z"
-        };
+    <div class="demo-section">
+      <h2>S tlačítky První/Poslední</h2>
+      <div id="pager2"></div>
+    </div>
 
-        class Pager {
-            constructor(containerId, options = {}) {
-                this.container = document.getElementById(containerId);
-                this.currentPage = 3;
-                this.itemsPerPage = 20;
-                this.totalItems = options.totalItems || 200;
-                this.showInfo = options.showInfo !== undefined ? options.showInfo : true;
-                this.showDropdown = options.showDropdown !== undefined ? options.showDropdown : true;
-                this.showFirstLast = options.showFirstLast || false;
-                this.showPages = options.showPages !== undefined ? options.showPages : true;
-                this.itemsPerPageOptions = options.itemsPerPageOptions || [10, 20, 30, 50, 100];
-                this.onPageChange = options.onPageChange || null;
-                
-                this.render();
-                this.attachEventListeners();
-            }
+    <div class="demo-section">
+      <h2>Minimální (bez info, bez dropdownu)</h2>
+      <div id="pager3"></div>
+    </div>
 
-            get totalPages() {
-                return Math.ceil(this.totalItems / this.itemsPerPage);
-            }
+    <div class="demo-section">
+      <h2>Bez čísel stránek</h2>
+      <div id="pager4"></div>
+    </div>
+  </div>
 
-            get startItem() {
-                return (this.currentPage - 1) * this.itemsPerPage + 1;
-            }
+  <script>
+    // SVG Paths
+    const svgPaths = {
+      p19db59f0: "M1.81066 6.56066L7.31066 1.06066L6.25 0L0.21967 6.03033C0.0790176 6.17098 0 6.36175 0 6.56066C0 6.75957 0.0790175 6.95034 0.21967 7.09099L6.25 13.1213L7.31066 12.0607L1.81066 6.56066Z",
+      p1e3bce80: "M12.0607 0L6.56066 5.5L1.06066 4.84288e-07L0 1.06066L6.03033 7.09099C6.17098 7.23164 6.36175 7.31066 6.56066 7.31066C6.75957 7.31066 6.95034 7.23164 7.09099 7.09099L13.1213 1.06066L12.0607 0Z",
+      p2894eeb0: "M7.31066 1.06066L1.81066 6.56066L7.31066 12.0607L6.25 13.1213L0.21967 7.09099C0.0790175 6.95034 0 6.75957 0 6.56066C0 6.36175 0.0790176 6.17098 0.21967 6.03033L6.25 0L7.31066 1.06066Z",
+      p31c1de00: "M8 1.06066L13.5 6.56066L8 12.0607L9.06066 13.1213L15.091 7.09099C15.2316 6.95034 15.3107 6.75957 15.3107 6.56066C15.3107 6.36175 15.2316 6.17098 15.091 6.03033L9.06066 0L8 1.06066Z",
+      p3899fe80: "M0 1.06066L5.5 6.56066L0 12.0607L1.06066 13.1213L7.09099 7.09099C7.23164 6.95034 7.31066 6.75957 7.31066 6.56066C7.31066 6.36175 7.23164 6.17098 7.09099 6.03033L1.06066 0L0 1.06066Z",
+      pb801480: "M9.81066 6.56066L15.3107 1.06066L14.25 0L8.21967 6.03033C8.07902 6.17098 8 6.36175 8 6.56066C8 6.75957 8.07902 6.95034 8.21967 7.09099L14.25 13.1213L15.3107 12.0607L9.81066 6.56066Z"
+    };
 
-            get endItem() {
-                return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
-            }
+    class Pager {
+      constructor(containerId, options = {}) {
+        this.container = document.getElementById(containerId);
+        this.currentPage = 3;
+        this.itemsPerPage = 20;
+        this.totalItems = options.totalItems || 200;
+        this.showInfo = options.showInfo !== undefined ? options.showInfo : true;
+        this.showDropdown = options.showDropdown !== undefined ? options.showDropdown : true;
+        this.showFirstLast = options.showFirstLast || false;
+        this.showPages = options.showPages !== undefined ? options.showPages : true;
+        this.itemsPerPageOptions = options.itemsPerPageOptions || [10, 20, 30, 50, 100];
+        this.onPageChange = options.onPageChange || null;
 
-            get infoText() {
-                return `${this.startItem}–${this.endItem} z ${this.totalItems}`;
-            }
+        this.render();
+        this.attachEventListeners();
+      }
 
-            get canGoPrevious() {
-                return this.currentPage > 1;
-            }
+      get totalPages() {
+        return Math.ceil(this.totalItems / this.itemsPerPage);
+      }
 
-            get canGoNext() {
-                return this.currentPage < this.totalPages;
-            }
+      get startItem() {
+        return (this.currentPage - 1) * this.itemsPerPage + 1;
+      }
 
-            getPageNumbers() {
-                const pageNumbers = [];
-                const maxVisible = 5;
-                
-                if (this.totalPages <= maxVisible) {
-                    for (let i = 1; i <= this.totalPages; i++) {
-                        pageNumbers.push(i);
-                    }
-                } else {
-                    let start = Math.max(1, this.currentPage - 2);
-                    let end = Math.min(this.totalPages, start + maxVisible - 1);
-                    
-                    if (end - start < maxVisible - 1) {
-                        start = Math.max(1, end - maxVisible + 1);
-                    }
-                    
-                    for (let i = start; i <= end; i++) {
-                        pageNumbers.push(i);
-                    }
-                }
-                
-                return pageNumbers;
-            }
+      get endItem() {
+        return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
+      }
 
-            createSVG(paths, viewBox, className = '') {
-                if (Array.isArray(paths)) {
-                    return `
-                        <svg class="${className}" fill="none" preserveAspectRatio="none" viewBox="${viewBox}">
-                            <g>
-                                ${paths.map(path => `<path d="${path}" fill="#717171" ${path.includes('clip') ? 'clip-rule="evenodd" fill-rule="evenodd"' : ''}/>`).join('')}
-                            </g>
-                        </svg>
-                    `;
-                } else {
-                    return `
-                        <svg class="${className}" fill="none" preserveAspectRatio="none" viewBox="${viewBox}">
-                            <path clip-rule="evenodd" d="${paths}" fill="#717171" fill-rule="evenodd"/>
-                        </svg>
-                    `;
-                }
-            }
+      get infoText() {
+        return `${this.startItem}–${this.endItem} z ${this.totalItems}`;
+      }
 
-            render() {
-                let html = '<div class="pager">';
+      get canGoPrevious() {
+        return this.currentPage > 1;
+      }
 
-                // Info
-                if (this.showInfo) {
-                    html += `
-                        <div class="pager-info">
-                            <span class="pager-info-text">${this.infoText}</span>
-                        </div>
-                    `;
-                }
+      get canGoNext() {
+        return this.currentPage < this.totalPages;
+      }
 
-                // First button
-                if (this.showFirstLast) {
-                    html += `
-                        <button class="pager-button" data-action="first" ${!this.canGoPrevious ? 'disabled' : ''}>
-                            <div class="icon-16">
-                                ${this.createSVG([svgPaths.p19db59f0, svgPaths.pb801480], '0 0 15.3107 13.1213')}
-                            </div>
-                        </button>
-                    `;
-                }
+      getPageNumbers() {
+        const pageNumbers = [];
+        const maxVisible = 5;
 
-                // Previous button
-                html += `
-                    <button class="pager-button" data-action="previous" ${!this.canGoPrevious ? 'disabled' : ''}>
-                        <div class="icon-8">
-                            ${this.createSVG(svgPaths.p2894eeb0, '0 0 7.31066 13.1213')}
-                        </div>
-                    </button>
-                `;
+        if (this.totalPages <= maxVisible) {
+          for (let i = 1; i <= this.totalPages; i++) {
+            pageNumbers.push(i);
+          }
+        } else {
+          let start = Math.max(1, this.currentPage - 2);
+          let end = Math.min(this.totalPages, start + maxVisible - 1);
 
-                // Page numbers
-                if (this.showPages) {
-                    html += '<div class="pages-wrap">';
-                    const pageNumbers = this.getPageNumbers();
-                    pageNumbers.forEach(pageNum => {
-                        const isActive = pageNum === this.currentPage;
-                        html += `
-                            <button class="pager-button ${isActive ? 'active' : ''}" data-action="page" data-page="${pageNum}">
-                                <span class="pager-page-number">${pageNum}</span>
-                            </button>
-                        `;
-                    });
-                    html += '</div>';
-                }
+          if (end - start < maxVisible - 1) {
+            start = Math.max(1, end - maxVisible + 1);
+          }
 
-                // Next button
-                html += `
-                    <button class="pager-button" data-action="next" ${!this.canGoNext ? 'disabled' : ''}>
-                        <div class="icon-8">
-                            ${this.createSVG(svgPaths.p3899fe80, '0 0 7.31066 13.1213')}
-                        </div>
-                    </button>
-                `;
-
-                // Last button
-                if (this.showFirstLast) {
-                    html += `
-                        <button class="pager-button" data-action="last" ${!this.canGoNext ? 'disabled' : ''}>
-                            <div class="icon-16">
-                                ${this.createSVG([svgPaths.p3899fe80, svgPaths.p31c1de00], '0 0 15.3107 13.1213')}
-                            </div>
-                        </button>
-                    `;
-                }
-
-                // Dropdown
-                if (this.showDropdown) {
-                    html += `
-                        <div class="dropdown-container">
-                            <div class="dropdown-wrap">
-                                <button class="dropdown-button" data-action="toggle-dropdown">
-                                    <span class="dropdown-text">${this.itemsPerPage}</span>
-                                    <div class="dropdown-icon">
-                                        <div class="icon-14">
-                                            ${this.createSVG(svgPaths.p1e3bce80, '0 0 13.1213 7.31066')}
-                                        </div>
-                                    </div>
-                                </button>
-                            </div>
-                            <div class="dropdown-menu">
-                                ${this.itemsPerPageOptions.map(option => `
-                                    <button class="dropdown-option ${option === this.itemsPerPage ? 'active' : ''}" data-action="select-items" data-value="${option}">
-                                        ${option}
-                                    </button>
-                                `).join('')}
-                            </div>
-                        </div>
-                    `;
-                }
-
-                html += '</div>';
-                this.container.innerHTML = html;
-            }
-
-            attachEventListeners() {
-                this.container.addEventListener('click', (e) => {
-                    const button = e.target.closest('button');
-                    if (!button) return;
-
-                    const action = button.dataset.action;
-
-                    switch (action) {
-                        case 'first':
-                            this.goToPage(1);
-                            break;
-                        case 'last':
-                            this.goToPage(this.totalPages);
-                            break;
-                        case 'previous':
-                            this.goToPage(this.currentPage - 1);
-                            break;
-                        case 'next':
-                            this.goToPage(this.currentPage + 1);
-                            break;
-                        case 'page':
-                            this.goToPage(parseInt(button.dataset.page));
-                            break;
-                        case 'toggle-dropdown':
-                            this.toggleDropdown();
-                            break;
-                        case 'select-items':
-                            this.setItemsPerPage(parseInt(button.dataset.value));
-                            break;
-                    }
-                });
-
-                // Close dropdown on outside click
-                document.addEventListener('click', (e) => {
-                    if (!e.target.closest('.dropdown-container')) {
-                        this.closeDropdown();
-                    }
-                });
-            }
-
-            goToPage(page) {
-                const newPage = Math.max(1, Math.min(page, this.totalPages));
-                if (newPage !== this.currentPage) {
-                    this.currentPage = newPage;
-                    this.render();
-                    this.attachEventListeners();
-                    
-                    if (this.onPageChange) {
-                        this.onPageChange(this.currentPage, this.itemsPerPage);
-                    }
-                }
-            }
-
-            setItemsPerPage(value) {
-                this.itemsPerPage = value;
-                const newTotalPages = Math.ceil(this.totalItems / value);
-                this.currentPage = Math.min(this.currentPage, newTotalPages);
-                this.render();
-                this.attachEventListeners();
-                
-                if (this.onPageChange) {
-                    this.onPageChange(this.currentPage, this.itemsPerPage);
-                }
-            }
-
-            toggleDropdown() {
-                const dropdown = this.container.querySelector('.dropdown-menu');
-                if (dropdown) {
-                    dropdown.classList.toggle('open');
-                }
-            }
-
-            closeDropdown() {
-                const dropdown = this.container.querySelector('.dropdown-menu');
-                if (dropdown) {
-                    dropdown.classList.remove('open');
-                }
-            }
+          for (let i = start; i <= end; i++) {
+            pageNumbers.push(i);
+          }
         }
 
-        // Initialize pagers
-        new Pager('pager1', {
-            totalItems: 200,
-            onPageChange: (page, itemsPerPage) => {
-                console.log(`Pager 1 - Stránka: ${page}, Položek na stránku: ${itemsPerPage}`);
-            }
+        return pageNumbers;
+      }
+
+      // ✅ ZMĚNA: preserveAspectRatio="xMidYMid meet" (centrum + bez deformace)
+      createSVG(paths, viewBox, className = '') {
+        if (Array.isArray(paths)) {
+          return `
+            <svg class="${className}" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="${viewBox}">
+              <g>
+                ${paths.map(path => `<path d="${path}" fill="#717171"/>`).join('')}
+              </g>
+            </svg>
+          `;
+        } else {
+          return `
+            <svg class="${className}" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="${viewBox}">
+              <path clip-rule="evenodd" d="${paths}" fill="#717171" fill-rule="evenodd"/>
+            </svg>
+          `;
+        }
+      }
+
+      render() {
+        let html = '<div class="pager">';
+
+        // Info
+        if (this.showInfo) {
+          html += `
+            <div class="pager-info">
+              <span class="pager-info-text">${this.infoText}</span>
+            </div>
+          `;
+        }
+
+        // First button
+        if (this.showFirstLast) {
+          html += `
+            <button class="pager-button" data-action="first" ${!this.canGoPrevious ? 'disabled' : ''}>
+              <div class="icon-16">
+                ${this.createSVG([svgPaths.p19db59f0, svgPaths.pb801480], '0 0 15.3107 13.1213')}
+              </div>
+            </button>
+          `;
+        }
+
+        // Previous button
+        html += `
+          <button class="pager-button" data-action="previous" ${!this.canGoPrevious ? 'disabled' : ''}>
+            <div class="icon-8">
+              ${this.createSVG(svgPaths.p2894eeb0, '0 0 7.31066 13.1213')}
+            </div>
+          </button>
+        `;
+
+        // Page numbers
+        if (this.showPages) {
+          html += '<div class="pages-wrap">';
+          const pageNumbers = this.getPageNumbers();
+          pageNumbers.forEach(pageNum => {
+            const isActive = pageNum === this.currentPage;
+            html += `
+              <button class="pager-button ${isActive ? 'active' : ''}" data-action="page" data-page="${pageNum}">
+                <span class="pager-page-number">${pageNum}</span>
+              </button>
+            `;
+          });
+          html += '</div>';
+        }
+
+        // Next button
+        html += `
+          <button class="pager-button" data-action="next" ${!this.canGoNext ? 'disabled' : ''}>
+            <div class="icon-8">
+              ${this.createSVG(svgPaths.p3899fe80, '0 0 7.31066 13.1213')}
+            </div>
+          </button>
+        `;
+
+        // Last button
+        if (this.showFirstLast) {
+          html += `
+            <button class="pager-button" data-action="last" ${!this.canGoNext ? 'disabled' : ''}>
+              <div class="icon-16">
+                ${this.createSVG([svgPaths.p3899fe80, svgPaths.p31c1de00], '0 0 15.3107 13.1213')}
+              </div>
+            </button>
+          `;
+        }
+
+        // Dropdown
+        if (this.showDropdown) {
+          html += `
+            <div class="dropdown-container">
+              <div class="dropdown-wrap">
+                <button class="dropdown-button" data-action="toggle-dropdown">
+                  <span class="dropdown-text">${this.itemsPerPage}</span>
+                  <div class="dropdown-icon">
+                    <div class="icon-14">
+                      ${this.createSVG(svgPaths.p1e3bce80, '0 0 13.1213 7.31066')}
+                    </div>
+                  </div>
+                </button>
+              </div>
+              <div class="dropdown-menu">
+                ${this.itemsPerPageOptions.map(option => `
+                  <button class="dropdown-option ${option === this.itemsPerPage ? 'active' : ''}" data-action="select-items" data-value="${option}">
+                    ${option}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        html += '</div>';
+        this.container.innerHTML = html;
+      }
+
+      attachEventListeners() {
+        this.container.addEventListener('click', (e) => {
+          const button = e.target.closest('button');
+          if (!button) return;
+
+          const action = button.dataset.action;
+
+          switch (action) {
+            case 'first':
+              this.goToPage(1);
+              break;
+            case 'last':
+              this.goToPage(this.totalPages);
+              break;
+            case 'previous':
+              this.goToPage(this.currentPage - 1);
+              break;
+            case 'next':
+              this.goToPage(this.currentPage + 1);
+              break;
+            case 'page':
+              this.goToPage(parseInt(button.dataset.page));
+              break;
+            case 'toggle-dropdown':
+              this.toggleDropdown();
+              break;
+            case 'select-items':
+              this.setItemsPerPage(parseInt(button.dataset.value));
+              break;
+          }
         });
 
-        new Pager('pager2', {
-            totalItems: 500,
-            showFirstLast: true,
-            onPageChange: (page, itemsPerPage) => {
-                console.log(`Pager 2 - Stránka: ${page}, Položek na stránku: ${itemsPerPage}`);
-            }
+        // Close dropdown on outside click
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.dropdown-container')) {
+            this.closeDropdown();
+          }
         });
+      }
 
-        new Pager('pager3', {
-            totalItems: 100,
-            showInfo: false,
-            showDropdown: false,
-            onPageChange: (page, itemsPerPage) => {
-                console.log(`Pager 3 - Stránka: ${page}, Položek na stránku: ${itemsPerPage}`);
-            }
-        });
+      goToPage(page) {
+        const newPage = Math.max(1, Math.min(page, this.totalPages));
+        if (newPage !== this.currentPage) {
+          this.currentPage = newPage;
+          this.render();
+          this.attachEventListeners();
 
-        new Pager('pager4', {
-            totalItems: 150,
-            showPages: false,
-            onPageChange: (page, itemsPerPage) => {
-                console.log(`Pager 4 - Stránka: ${page}, Položek na stránku: ${itemsPerPage}`);
-            }
-        });
-    </script>
+          if (this.onPageChange) {
+            this.onPageChange(this.currentPage, this.itemsPerPage);
+          }
+        }
+      }
+
+      setItemsPerPage(value) {
+        this.itemsPerPage = value;
+        const newTotalPages = Math.ceil(this.totalItems / value);
+        this.currentPage = Math.min(this.currentPage, newTotalPages);
+        this.render();
+        this.attachEventListeners();
+
+        if (this.onPageChange) {
+          this.onPageChange(this.currentPage, this.itemsPerPage);
+        }
+      }
+
+      toggleDropdown() {
+        const dropdown = this.container.querySelector('.dropdown-menu');
+        if (dropdown) {
+          dropdown.classList.toggle('open');
+        }
+      }
+
+      closeDropdown() {
+        const dropdown = this.container.querySelector('.dropdown-menu');
+        if (dropdown) {
+          dropdown.classList.remove('open');
+        }
+      }
+    }
+
+    // Initialize pagers
+    new Pager('pager1', {
+      totalItems: 200,
+      onPageChange: (page, itemsPerPage) => {
+        console.log(`Pager 1 - Stránka: ${page}, Položek na stránku: ${itemsPerPage}`);
+      }
+    });
+
+    new Pager('pager2', {
+      totalItems: 500,
+      showFirstLast: true,
+      onPageChange: (page, itemsPerPage) => {
+        console.log(`Pager 2 - Stránka: ${page}, Položek na stránku: ${itemsPerPage}`);
+      }
+    });
+
+    new Pager('pager3', {
+      totalItems: 100,
+      showInfo: false,
+      showDropdown: false,
+      onPageChange: (page, itemsPerPage) => {
+        console.log(`Pager 3 - Stránka: ${page}, Položek na stránku: ${itemsPerPage}`);
+      }
+    });
+
+    new Pager('pager4', {
+      totalItems: 150,
+      showPages: false,
+      onPageChange: (page, itemsPerPage) => {
+        console.log(`Pager 4 - Stránka: ${page}, Položek na stránku: ${itemsPerPage}`);
+      }
+    });
+  </script>
 </body>
 </html>
