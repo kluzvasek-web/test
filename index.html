@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ordinace Rehabilitačního Lékaře</title>
+  <meta name="description" content="Komplexní rehabilitační a fyzioterapeutická péče. Moderní ordinace s důrazem na pohybové zdraví, zkušený tým lékařů a fyzioterapeutů.">
+  <style>
+    :root {
+      --primary: #e9f9f1; /* světle zelená */
+      --secondary: #eaf6fb; /* světle modrá */
+      --accent: #b3e2cd; /* jemná zelená */
+      --white: #fff;
+      --gray-light: #f7f9fa;
+      --gray: #eaeaea;
+      --text: #1e2e2e;
+      --muted: #4a7275;
+      --transition: 0.2s cubic-bezier(.46,.03,.52,.96);
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: var(--text);
+      background: var(--gray-light);
+    }
+    header {
+      background: var(--white);
+    }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 998;
+      display: flex;
+      justify-content: center;
+      background: var(--white);
+      box-shadow: 0 2px 10px 0 rgba(153,175,169,0.05);
+      transition: box-shadow var(--transition);
+    }
+    nav ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    nav li {
+      margin: 0;
+    }
+    nav a {
+      display: block;
+      padding: 1rem 1.2rem;
+      color: var(--muted);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      border-radius: 1.5rem;
+      transition: background var(--transition), color var(--transition);
+    }
+    nav a:hover, nav a:focus {
+      background: var(--secondary);
+      color: var(--text);
+      outline: none;
+    }
+
+    @media (max-width: 800px) {
+      nav ul { flex-wrap: wrap; gap: 0; }
+      nav a { padding: 0.9rem 0.7rem; font-size: 15px; }
+    }
+    @media (max-width: 600px) {
+      nav { font-size: 15px; }
+      nav ul { flex-direction: column; align-items: flex-start; }
+      nav a { padding: 0.9rem 0.9rem; }
+    }
+    /* Hero */
+    .hero {
+      background: linear-gradient(120deg, var(--primary) 70%, var(--secondary) 100%);
+      padding: 3rem 1rem 4rem 1rem;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 2.6rem;
+      font-weight: 700;
+      margin: 0 0 1rem 0;
+      color: var(--muted);
+      letter-spacing: -1px;
+    }
+    .hero p {
+      font-size: 1.3rem;
+      margin: 0 0 2.5rem 0;
+      max-width: 570px;
+      margin-left: auto;
+      margin-right: auto;
+      color: #336171;
+    }
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+    .cta-buttons a {
+      text-decoration: none;
+      padding: 0.9rem 2.1rem;
+      border-radius: 2rem;
+      background: var(--accent);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 1.13rem;
+      box-shadow: 0 2px 8px 0 rgba(180,225,200,0.08);
+      transition: background var(--transition), color var(--transition), transform var(--transition);
+    }
+    .cta-buttons a.secondary {
+      background: var(--secondary);
+      color: var(--muted);
+    }
+    .cta-buttons a:hover, .cta-buttons a:focus {
+      background: #89d3b5;
+      color: #15573a;
+      transform: translateY(-3px) scale(1.03);
+      outline: none;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 2.2rem 1.2rem;
+    }
+    section { margin-bottom: 2.5rem; }
+    section h2 {
+      font-size: 2rem;
+      color: var(--muted);
+      margin-bottom: 0.65em;
+      font-weight: 650;
+      text-align: center;
+    }
+
+    /* Služby karty */
+    .services-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.6rem;
+    }
+    .service-card {
+      background: var(--white);
+      border-radius: 1rem;
+      box-shadow: 0 1px 8px 0 rgba(130,155,138,0.07);
+      padding: 1.5rem 1.1rem 1.3rem 1.1rem;
+      text-align: center;
+      transition: box-shadow var(--transition), transform var(--transition);
+      min-height: 210px;
+      border-left: 4px solid var(--accent);
+    }
+    .service-card:hover, .service-card:focus-within {
+      box-shadow: 0 6px 24px 0 rgba(130,155,138,0.14);
+      transform: translateY(-2px);
+      border-left: 4px solid #3fb589;
+    }
+    .service-card h3 {
+      font-size: 1.18rem;
+      margin: 0.8em 0 0.5em 0;
+      color: #217571;
+    }
+    .service-card p {
+      color: #435a67;
+      font-size: 1.04rem;
+    }
+
+    /* Cards (výhody, řešení) */
+    .benefits-cards, .target-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.1rem;
+      justify-content: center;
+      margin-top: 1.1rem;
+    }
+    .benefit-card, .target-card {
+      background: var(--secondary);
+      border-radius: 0.93rem;
+      padding: 1.1rem 1.0rem;
+      flex: 1 1 210px;
+      min-width: 170px;
+      max-width: 290px;
+      text-align: center;
+      box-shadow: 0 1px 7px 0 rgba(90,110,110,0.07);
+      transition: box-shadow var(--transition), transform var(--transition);
+      font-size: 1.05rem;
+    }
+    .benefit-card:hover, .target-card:hover, .target-card:focus-within, .benefit-card:focus-within {
+      box-shadow: 0 4px 20px 0 rgba(90,130,110,0.13);
+      transform: scale(1.035);
+    }
+    .benefit-card strong, .target-card strong { color: #217571; }
+
+    /* How it works list */
+    .how-steps {
+      max-width: 680px;
+      margin: 1.8rem auto 0 auto;
+      padding: 0;
+      list-style: none;
+    }
+    .how-steps li {
+      background: var(--white);
+      border-left: 4px solid var(--accent);
+      border-radius: 0.8rem;
+      padding: 1.05rem 0.95rem;
+      margin-bottom: 1.1rem;
+      box-shadow: 0 1px 6px 0 rgba(110,145,140,.05);
+      font-size: 1.07rem;
+    }
+
+    /* Team grid & profile */
+    .team-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.6rem;
+      justify-content: center;
+      margin-top: 1.9rem;
+    }
+    .team-member {
+      background: var(--white);
+      border-radius: 0.9rem;
+      box-shadow: 0 1px 8px 0 rgba(90,120,110,0.07);
+      padding: 1.15rem 1.2rem;
+      text-align: center;
+      max-width: 230px;
+      flex: 1 1 200px;
+      transition: box-shadow var(--transition), transform var(--transition);
+    }
+    .team-member:hover, .team-member:focus-within {
+      box-shadow: 0 6px 20px 0 rgba(80,120,110,0.13);
+      transform: scale(1.025);
+    }
+    .team-member img {
+      width: 75px; height: 75px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 0.8rem;
+      border: 3px solid var(--accent);
+    }
+    .team-member h4 {
+      margin: 0.4em 0 0.2em 0;
+      font-size: 1.09rem;
+      color: #249986;
+    }
+    .team-member span {
+      display: block;
+      font-size: 1rem;
+      color: #38597a;
+      margin-bottom: 0.26rem;
+    }
+    .team-member p {
+      font-size: 0.99rem;
+      color: #466760;
+      margin: 0;
+    }
+    /* Reference */
+    .references {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.2rem;
+      margin-top: 1.6rem;
+      margin-bottom: 1.6rem;
+    }
+    .reference {
+      background: var(--secondary);
+      border-radius: 1rem;
+      box-shadow: 0 1px 5px 0 rgba(100,140,130,0.08);
+      padding: 1.25rem 1.1rem 1.1rem 1.2rem;
+      font-size: 1.07rem;
+      color: #294751;
+      position: relative;
+    }
+    .reference:before {
+      content: "“";
+      color: #57ac8d;
+      font-size: 2.6rem;
+      position: absolute;
+      left: 1.0rem; top: 0.7rem;
+      opacity: 0.17;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .reference-footer {
+      margin-top: 0.9em;
+      color: #438488;
+      font-size: 0.97rem;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    /* FAQ (Accordion) */
+    .faq-list {
+      max-width: 680px;
+      margin: 2rem auto 0 auto;
+      padding: 0;
+    }
+    details.faq-item {
+      margin-bottom: 1.22rem;
+      background: var(--white);
+      border-radius: 0.85rem;
+      box-shadow: 0 1px 6px 0 rgba(110,145,140,.07);
+      border-left: 4px solid var(--accent);
+      transition: box-shadow var(--transition), border-color var(--transition);
+    }
+    details.faq-item[open] {
+      box-shadow: 0 4px 18px 0 rgba(120,175,133,.11);
+      border-color: #2ea677;
+    }
+    summary {
+      font-size: 1.07rem;
+      color: #217571;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 1.1rem 1.2rem;
+      outline: none;
+      user-select: none;
+      list-style: none;
+    }
+    details > *:not(summary) {
+      padding: 0 1.2rem 1.15rem 1.2rem;
+      font-size: 1.04rem;
+      color: #38597a;
+    }
+
+    /* Kontakt/formulář */
+    .contact-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2.1rem;
+      margin-top: 2.2rem;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    .contact-info, .contact-form {
+      background: var(--white);
+      border-radius: 1rem;
+      box-shadow: 0 1px 8px 0 rgba(100,120,120,0.08);
+      padding: 1.6rem 1.3rem 1.3rem 1.3rem;
+      flex: 1 1 290px;
+      min-width: 230px;
+      max-width: 390px;
+    }
+    .contact-info h3, .contact-form h3 {
+      margin-top: 0;
+      color: #249986;
+      font-size: 1.14rem;
+      margin-bottom: .9rem;
+    }
+    .contact-info address {
+      font-style: normal;
+      line-height: 1.7;
+      color: #3c545c;
+    }
+    .contact-hours {
+      background: var(--secondary);
+      border-radius: 0.7rem;
+      margin-top: 1.1rem;
+      padding: 0.7rem 1rem 0.85rem 1rem;
+      font-size: 1.03rem;
+    }
+
+    .contact-form form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+      margin-top: 1.1rem;
+    }
+    .contact-form label {
+      color: #38597a;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.29rem;
+    }
+    .contact-form input, .contact-form textarea {
+      padding: 0.7rem 0.9rem;
+      border: 1px solid #dbeef4;
+      border-radius: 0.55rem;
+      font-size: 1.05rem;
+      background: var(--gray-light);
+      transition: border-color var(--transition);
+    }
+    .contact-form input:focus, .contact-form textarea:focus {
+      border-color: var(--accent);
+      outline: none;
+      background: var(--secondary);
+    }
+    .contact-form button {
+      align-self: flex-end;
+      padding: 0.8rem 2.0rem;
+      border-radius: 2rem;
+      border: none;
+      background: var(--accent);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 1.08rem;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition), transform var(--transition);
+    }
+    .contact-form button:hover, .contact-form button:focus {
+      background: #76c9a3;
+      color: #185b42;
+      transform: translateY(-2px) scale(1.04);
+      outline: none;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--secondary);
+      text-align: center;
+      padding: 2rem 1rem 1rem 1rem;
+      font-size: 1.04rem;
+      color: #4a7275;
+      margin-top: 3rem;
+      border-top: 2px solid var(--accent);
+    }
+    .disclaimer {
+      font-size: 0.98rem;
+      color: #999;
+      padding-top: 0.87em;
+    }
+
+    @media (max-width: 1100px) {
+      .container { max-width: 97vw; }
+    }
+    @media (max-width: 780px) {
+      .services-cards { grid-template-columns: 1fr; }
+      .references { grid-template-columns: 1fr; }
+      .team-grid, .benefits-cards, .target-cards { flex-direction: column; gap: 1.2rem; }
+      .contact-grid { flex-direction: column; gap: 1.1rem; }
+    }
+    @media (max-width: 520px) {
+      .hero h1 { font-size: 1.7rem; }
+      .hero p { font-size: 1.07rem; }
+      section h2 { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#uvod">Úvod</a></li>
+        <li><a href="#o-ordinaci">O ordinaci</a></li>
+        <li><a href="#sluzby">Služby</a></li>
+        <li><a href="#jak-pece-probiha">Jak péče probíhá</a></li>
+        <li><a href="#pro-koho">Pro koho</a></li>
+        <li><a href="#vyhody">Výhody</a></li>
+        <li><a href="#tym">Tým</a></li>
+        <li><a href="#reference">Reference</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#kontakt">Kontakt</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="uvod">
+      <h1>Komplexní rehabilitační a fyzioterapeutická péče</h1>
+      <p>
+        Specializovaná ordinace zaměřená na diagnostiku, léčbu a prevenci pohybových obtíží. Spojujeme odbornost rehabilitačního lékařství s moderní fyzioterapií v klidném a přátelském prostředí.
+      </p>
+      <div class="cta-buttons">
+        <a href="#kontakt">Objednat se</a>
+        <a href="#sluzby" class="secondary">Naše služby</a>
+      </div>
+    </section>
+
+    <div class="container">
+      <!-- O ordinaci -->
+      <section id="o-ordinaci">
+        <h2>O naší ordinaci</h2>
+        <p>
+          Naše ordinace rehabilitačního lékaře nabízí individuální přístup pro děti i dospělé s akutními i chronickými obtížemi pohybového aparátu. Poskytujeme komplexní rehabilitační péči, která zahrnuje diagnostiku, léčbu a moderní fyzioterapeutické postupy. Zaměřujeme se na obnovu funkce, prevenci recidiv a návrat k plnohodnotnému životu.
+        </p>
+      </section>
+
+      <!-- Služby -->
+      <section id="sluzby">
+        <h2>Naše služby</h2>
+        <div class="services-cards">
+          <div class="service-card">
+            <h3>Lékařské vyšetření</h3>
+            <p>Kompletní diagnostika pohybového aparátu včetně funkčních a zobrazovacích vyšetření. Navržení optimálního léčebného plánu na základě aktuálních poznatků.</p>
+          </div>
+          <div class="service-card">
+            <h3>Fyzioterapie na míru</h3>
+            <p>Cílená terapie pod vedením zkušených fyzioterapeutů. Individuální cvičení, mobilizační a měkké techniky, edukace a prevence.</p>
+          </div>
+          <div class="service-card">
+            <h3>Rehabilitační programy</h3>
+            <p>Speciální programy pro bolesti zad, poúrazové stavy, neurologická, ortopedická i dětská onemocnění. Navrženo dle potřeb pacienta.</p>
+          </div>
+          <div class="service-card">
+            <h3>Konzultace a prevence</h3>
+            <p>Poradenství v oblasti ergonomie, prevence přetížení a civilizačních nemocí, doporučení vhodné pohybové aktivity a režimu.</p>
+          </div>
+          <div class="service-card">
+            <h3>Spolupráce s dalšími specialisty</h3>
+            <p>Možnost mezioborové spolupráce (ortopedie, neurologie, radiodiagnostika, ergoterapie) pro co nejrychlejší a nejefektivnější léčbu.</p>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Jak péče probíhá -->
+      <section id="jak-pece-probiha">
+        <h2>Jak péče probíhá</h2>
+        <ul class="how-steps">
+          <li><strong>1. Objednání –</strong> kontaktujte nás telefonicky, e-mailem nebo přes webový formulář a domluvíme vhodný termín.</li>
+          <li><strong>2. První vyšetření –</strong> lékař provede komplexní diagnostiku a navrhne léčebný plán na míru.</li>
+          <li><strong>3. Realizace terapie –</strong> zahájení fyzioterapeutického programu, pravidelné kontroly a úprava postupu dle vašeho pokroku.</li>
+          <li><strong>4. Prevence a edukace –</strong> doporučíme cviky, ergonomii i režimová opatření pro dlouhodobé udržení výsledků.</li>
+        </ul>
+      </section>
+
+      <!-- Pro koho je péče vhodná -->
+      <section id="pro-koho">
+        <h2>Pro koho je péče vhodná</h2>
+        <div class="target-cards">
+          <div class="target-card"><strong>Děti</strong> s vadným držením těla, skoliózou, neurologickými diagnózami</div>
+          <div class="target-card"><strong>Dospělí a senioři</strong> s bolestmi zad, kloubů, pohybovým omezením či po úrazech</div>
+          <div class="target-card"><strong>Sportovci</strong> s akutními i chronickými přetíženími</div>
+          <div class="target-card"><strong>Pracující</strong> vystavení dlouhodobému sezení či námaze</div>
+          <div class="target-card"><strong>Rekonvalescenti</strong> po operacích, úrazech i infarktu</div>
+        </div>
+      </section>
+
+      <!-- Výhody ordinace -->
+      <section id="vyhody">
+        <h2>Proč si vybrat naši ordinaci</h2>
+        <div class="benefits-cards">
+          <div class="benefit-card"><strong>Spolupráce lékaře a fyzioterapeuta:</strong><br>úzká kooperace pro efektivní a bezpečnou péči.</div>
+          <div class="benefit-card"><strong>Moderní přístrojové vybavení:</strong><br>diagnostika a terapie dle nejnovějších poznatků.</div>
+          <div class="benefit-card"><strong>Individuální přístup:</strong><br>každý pacient je pro nás jedinečný.</div>
+          <div class="benefit-card"><strong>Široké spektrum služeb:</strong><br>od prevence po terapii a následnou péči.</div>
+          <div class="benefit-card"><strong>Krátké objednací lhůty:</strong><br>flexibilní možnost objednání.</div>
+          <div class="benefit-card"><strong>Důvěryhodné prostředí:</strong><br>přátelský a respektující přístup celého týmu.</div>
+        </div>
+      </section>
+
+      <!-- Tým -->
+      <section id="tym">
+        <h2>Náš tým</h2>
+        <div class="team-grid">
+          <div class="team-member">
+            <img src="https://randomuser.me/api/portraits/men/54.jpg" alt="MUDr. Daniel Novák">
+            <h4>MUDr. Daniel Novák</h4>
+            <span>Rehabilitační lékař</span>
+            <p>Specialista na fyzikální léčbu, vedení rehabilitačních programů a komplexní diagnostiku pohybového aparátu s dlouholetou praxí.</p>
+          </div>
+          <div class="team-member">
+            <img src="https://randomuser.me/api/portraits/women/47.jpg" alt="Bc. Tereza Malá">
+            <h4>Bc. Tereza Malá</h4>
+            <span>Fyzioterapeutka</span>
+            <p>Zaměřuje se na terapii vertebrogenních potíží, mobilizační techniky a edukaci pacientů všech věkových kategorií.</p>
+          </div>
+          <div class="team-member">
+            <img src="https://randomuser.me/api/portraits/men/61.jpg" alt="Mgr. Martin Kroupa">
+            <h4>Mgr. Martin Kroupa</h4>
+            <span>Fyzioterapeut</span>
+            <p>Odborník na sportovní fyzioterapii, rehabilitaci po úrazech a vedení skupinových cvičení.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reference -->
+      <section id="reference">
+        <h2>Hodnocení a zkušenosti pacientů</h2>
+        <div class="references">
+          <blockquote class="reference">
+            Po úrazu ramene mi byl navržen přesný léčebný plán a díky týmové spolupráci lékaře a fyzioterapeutky jsem se brzy vrátil ke sportu.
+            <div class="reference-footer">— Jiří Š.</div>
+          </blockquote>
+          <blockquote class="reference">
+            Výborný přístup k dětem, individuální terapie a ochota vše vysvětlit. Mohu jen doporučit.
+            <div class="reference-footer">— Eva L.</div>
+          </blockquote>
+          <blockquote class="reference">
+            Oceňuji moderní vybavení, odbornou diagnostiku a možnost rychlé objednávky. Profesionalita i lidskost v jednom.
+            <div class="reference-footer">— Pavel D.</div>
+          </blockquote>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section id="faq">
+        <h2>Nejčastější dotazy</h2>
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary>Je nutné mít doporučení praktického lékaře?</summary>
+            <div>
+              Doporučení praktikem urychluje administrativní proces, většinu výkonů však po domluvě poskytujeme i bez něj. Pro větší úhradu pojišťovnou je doporučení vhodné.
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary>Jak mám přijít oblečen/a na vyšetření?</summary>
+            <div>
+              Doporučujeme pohodlné volné oblečení, umožňující pohyb a případně odhalení ošetřované oblasti (tričko, tepláky, legíny).
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary>Jak dlouho trvá jedna terapie?</summary>
+            <div>
+              Délka závisí na druhu obtíží, zpravidla 20–50 minut. O přesné délce vás informujeme na místě.
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary>Přijímáte nové pacienty?</summary>
+            <div>
+              Ano, aktuálně přijímáme nové pacienty. Pro objednání využijte kontaktní formulář, případně nám zavolejte.
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- Kontakt -->
+      <section id="kontakt">
+        <h2>Kontaktujte nás</h2>
+        <div class="contact-grid">
+          <div class="contact-info">
+            <h3>Adresa ordinace</h3>
+            <address>
+              Rehabilitační ordinace MUDr. Novák<br>
+              U Zdraví 24, 170 00 Praha 7
+            </address>
+            <h3>Telefon</h3>
+            <p><a href="tel:+420123456789" style="color:#206f5b;text-decoration: underline;">+420 123 456 789</a></p>
+            <h3>E-mail</h3>
+            <p><a href="mailto:info@ordinacerehab.cz" style="color:#206f5b;text-decoration: underline;">info@ordinacerehab.cz</a></p>
+            <div class="contact-hours">
+              <strong>Ordinační doba:</strong><br>
+              Po–Pá: 7:30 – 17:30<br>
+              So–Ne: zavřeno
+            </div>
+          </div>
+          <div class="contact-form">
+            <h3>Rychlý kontakt</h3>
+            <form id="contactForm" autocomplete="off">
+              <label for="name">Jméno a příjmení *</label>
+              <input type="text" id="name" name="name" required>
+              <label for="email">E-mail *</label>
+              <input type="email" id="email" name="email" required>
+              <label for="message">Zpráva *</label>
+              <textarea id="message" name="message" rows="4" required></textarea>
+              <button type="submit">Odeslat zprávu</button>
+            </form>
+            <div id="form-msg" style="color:#319d74;font-size:1rem;margin-top:1em;display:none;font-weight:600;"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div>
+      &copy; 2026 Rehabilitační ordinace MUDr. Novák &nbsp;|&nbsp;
+      <a href="#o-ordinaci" style="color:#4a7275;text-decoration:underline;">O ordinaci</a>
+    </div>
+    <div class="disclaimer">
+      Informace na těchto stránkách nenahrazují individuální lékařské vyšetření. Pro odborné posouzení vašeho zdravotního stavu kontaktujte lékaře.
+    </div>
+  </footer>
+
+  <!-- Jemný JavaScript: kontakt + smooth-scroll pro anchor navigaci -->
+  <script>
+    // Zpráva po odeslání formuláře (neodesílá e-mail!)
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('contactForm');
+      const msg = document.getElementById('form-msg');
+      if (form) {
+        form.addEventListener('submit', function(event) {
+          event.preventDefault();
+          form.reset();
+          msg.style.display = 'block';
+          msg.textContent = 'Děkujeme za vaši zprávu. Ozveme se vám co nejdříve!';
+        });
+      }
+    });
+    // Smooth scroll polyfill pro starší prohlížeče (volitelný), anchor navigace smooth je jinak řešená v CSS (scroll-behavior).
+  </script>
+</body>
+</html>
